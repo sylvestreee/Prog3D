@@ -2,6 +2,10 @@
 
 Projet réalisé dans le cadre de l'UE "Programmation graphique 3D"
 
+##  Objectif
+
+L'objectif de ce projet a été de développer un simulateur de système solaire à l'aide de WebGL offrant divers fonctionnalités.
+
 ##  Lancement du programme
 
-Après ouverture d'un terminal, lancez un serveur python sur le port 8000 avec la commande `python -m SimpleHTTPServer 8000`
+Après ouverture d'un terminal, lancez un serveur python sur le port 8000 avec la commande `python -m SimpleHTTPServer 8000`.
