@@ -4,7 +4,7 @@ Projet réalisé dans le cadre de l'UE "Programmation graphique 3D"
 
 ##  Objectif
 
-L'objectif de ce projet a été de développer un simulateur de système solaire à l'aide de WebGL, en offrant divers fonctionnalités.
+L'objectif de ce projet a été de développer un simulateur de système solaire à l'aide de WebGL, en offrant diverses fonctionnalités.
 
 ##  Lancement du programme
 
