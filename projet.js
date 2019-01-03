@@ -54,8 +54,18 @@ let text_n = null;
 
 let prg_white = null;
 var vao1 = null;
-function init_wgl()
-{
+
+var sl_n;
+
+function create_interf() {
+	UserInterface.begin(); // name of html id
+	sl_n = UserInterface.add_slider('Temps', 1, 100, 0, update_wgl);
+	UserInterface.add_br();
+}
+
+function init_wgl() {
+	create_interf();
+
 	prg_white = ShaderProgram(white_vert,white_frag,'white');
 
   //crée un tore
@@ -122,8 +132,7 @@ function init_wgl()
 	scene_camera.set_scene_radius(500);
 }
 
-function draw_wgl()
-{
+function draw_wgl() {
 	gl.clearColor(0,0,0,1);
 	gl.enable(gl.DEPTH_TEST);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -143,7 +152,7 @@ function draw_wgl()
 	let pos = mmult(
 									view_matrix,
 							    translate(0, 0, 0),
-									rotateZ(ewgl_current_time/rotation_soleil),
+									rotateZ((ewgl_current_time*sl_n.value)/rotation_soleil),
 									scale(15, 15, 15)
 								);
 	update_uniform('viewMatrix', pos);
@@ -160,9 +169,9 @@ function draw_wgl()
 	let pos2 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
-									 rotateZ(ewgl_current_time/revolution_mercure),
+									 rotateZ((ewgl_current_time*sl_n.value)/revolution_mercure),
 									 translate(distance_mercure, 0, 0),
-									 rotateZ(ewgl_current_time/rotation_mercure),
+									 rotateZ((ewgl_current_time*sl_n.value)/rotation_mercure),
 									 scale(scale_mercure, scale_mercure, scale_mercure)
 								 );
 	update_uniform('viewMatrix', pos2);
@@ -179,9 +188,9 @@ function draw_wgl()
 	let pos3 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
-									 rotateZ(ewgl_current_time/revolution_venus),
+									 rotateZ((ewgl_current_time*sl_n.value)/revolution_venus),
 									 translate(distance_venus, 0, 0),
-									 rotateZ(ewgl_current_time/rotation_venus),
+									 rotateZ((ewgl_current_time*sl_n.value)/rotation_venus),
 									 scale(scale_venus, scale_venus, scale_venus)
 								 );
 	update_uniform('viewMatrix', pos3);
@@ -198,9 +207,9 @@ function draw_wgl()
 	let pos4 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
-									 rotateZ(ewgl_current_time/revolution_terre),
+									 rotateZ((ewgl_current_time*sl_n.value)/revolution_terre),
 									 translate(distance_terre, 0, 0),
-									 rotateZ(ewgl_current_time/rotation_terre),
+									 rotateZ((ewgl_current_time*sl_n.value)/rotation_terre),
 									 scale(scale_terre, scale_terre, scale_terre)
 								 );
 	update_uniform('viewMatrix', pos4);
@@ -217,9 +226,9 @@ function draw_wgl()
 	let pos5 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
-									 rotateZ(ewgl_current_time/revolution_mars),
+									 rotateZ((ewgl_current_time*sl_n.value)/revolution_mars),
 									 translate(distance_mars, 0, 0),
-									 rotateZ(ewgl_current_time/rotation_mars),
+									 rotateZ((ewgl_current_time*sl_n.value)/rotation_mars),
 									 scale(scale_mars, scale_mars, scale_mars)
 								 );
 	update_uniform('viewMatrix', pos5);
@@ -236,9 +245,9 @@ function draw_wgl()
 	let pos6 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
-									 rotateZ(ewgl_current_time/revolution_jupiter),
+									 rotateZ((ewgl_current_time*sl_n.value)/revolution_jupiter),
 									 translate(distance_jupiter, 0, 0),
-									 rotateZ(ewgl_current_time/rotation_jupiter),
+									 rotateZ((ewgl_current_time*sl_n.value)/rotation_jupiter),
 									 scale(scale_jupiter, scale_jupiter, scale_jupiter)
 								 );
 	update_uniform('viewMatrix', pos6);
@@ -255,9 +264,9 @@ function draw_wgl()
 	let pos7 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
-									 rotateZ(ewgl_current_time/revolution_saturne),
+									 rotateZ((ewgl_current_time*sl_n.value)/revolution_saturne),
 									 translate(distance_saturne, 0, 0),
-									 rotateZ(ewgl_current_time/rotation_saturne),
+									 rotateZ((ewgl_current_time*sl_n.value)/rotation_saturne),
 									 scale(scale_saturne, scale_saturne, scale_saturne)
 								 );
 	update_uniform('viewMatrix', pos7);
@@ -274,9 +283,9 @@ function draw_wgl()
 	let pos8 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
-									 rotateZ(ewgl_current_time/revolution_uranus),
+									 rotateZ((ewgl_current_time*sl_n.value)/revolution_uranus),
 									 translate(distance_uranus, 0, 0),
-									 rotateZ(ewgl_current_time/rotation_uranus),
+									 rotateZ((ewgl_current_time*sl_n.value)/rotation_uranus),
 									 scale(scale_uranus, scale_uranus, scale_uranus)
 								 );
 	update_uniform('viewMatrix', pos8);
@@ -293,9 +302,9 @@ function draw_wgl()
 	let pos9 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
-									 rotateZ(ewgl_current_time/revolution_neptune),
+									 rotateZ((ewgl_current_time*sl_n.value)/revolution_neptune),
 									 translate(distance_neptune, 0, 0),
-									 rotateZ(ewgl_current_time/rotation_neptune),
+									 rotateZ((ewgl_current_time*sl_n.value)/rotation_neptune),
 									 scale(scale_neptune, scale_neptune, scale_neptune)
 								 );
 	update_uniform('viewMatrix', pos9);
