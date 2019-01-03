@@ -85,7 +85,7 @@ UserInterface.begin("Interface")
 //--------------------------------------
 
 * sans décoration: use_group(dir), dir: 'H' ou 'V'
-* avec décolration: use_field_set(dir, label, frame_width,frame_color,bg_color,bold?)
+* avec décoration: use_field_set(dir, label, frame_width,frame_color,bg_color,bold?)
 * fin du groupe: .end_use()
 
 UserInterface.use_group('H'); // groupe sans décorations
