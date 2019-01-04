@@ -82,6 +82,8 @@ let text_sa = null;
 let text_u = null;
 let text_n = null;
 
+// let uranus = Mesh.Sphere(20);
+
 let distance_soleil = 10000000;
 var prg_circ = null;
 
@@ -195,8 +197,9 @@ function init_wgl() {
   ewgl_current_time = now.getHours()*3600+now.getMinutes()*60;
 
   //place la caméra pour bien voir l'objet
-	scene_camera.show_scene(soleil.BB);
+	// scene_camera.show_scene(terre.BB.center);
 	scene_camera.set_scene_radius(500);
+	scene_camera.set_scene_center(terre.BB.center);
 }
 
 function draw_wgl() {
@@ -281,7 +284,7 @@ function draw_wgl() {
 	let revolution_mercure = 88/1000;
 	let rotation_mercure = 59/1000;
 
-	let pos2 = mmult(
+	let pos2 = mmult(// console.log(uranus);
 									 view_matrix,
 									 translate(0, 0, 0),
 									 rotateZ((ewgl_current_time*sl_n.value)/revolution_mercure),
