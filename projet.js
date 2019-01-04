@@ -76,14 +76,12 @@ function onkey_wgl(k) {
 					if(distance_soleil >  5000000) {
 						distance_soleil -= 100000;
 					}
-					console.log(distance_soleil);
           break;
 
         case '-':
         	if(distance_soleil <  20000000) {
 						distance_soleil += 100000;
 					}
-					console.log(distance_soleil);
           break;
 
         case ' ':
