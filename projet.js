@@ -52,6 +52,8 @@ let text_sa = null;
 let text_u = null;
 let text_n = null;
 
+let distance_soleil = 10000000;
+
 let prg_white = null;
 var vao1 = null;
 
@@ -60,7 +62,39 @@ var sl_n;
 function create_interf() {
 	UserInterface.begin(); // name of html id
 	sl_n = UserInterface.add_slider('Temps', 1, 100, 0, update_wgl);
+
+	UserInterface.use_field_set('V',"Distances");
+  UserInterface.add_label("+ : augmentation");
+  UserInterface.add_label("- :  diminution");
+	UserInterface.add_label("espace : état initial");
 	UserInterface.add_br();
+}
+
+function onkey_wgl(k) {
+    switch (k) {
+        case '+':
+					if(distance_soleil >  5000000) {
+						distance_soleil -= 100000;
+					}
+					console.log(distance_soleil);
+          break;
+
+        case '-':
+        	if(distance_soleil <  20000000) {
+						distance_soleil += 100000;
+					}
+					console.log(distance_soleil);
+          break;
+
+        case ' ':
+          distance_soleil = 10000000;
+        	break;
+
+        default:
+					return false;
+          break;
+    }
+		return true;
 }
 
 function init_wgl() {
@@ -144,7 +178,6 @@ function draw_wgl() {
 	prg_white.bind();
 
 	let taille_soleil = 1390000;
-	let distance_soleil = 10000000;
 
 	/*soleil*/
 	let rotation_soleil = 25/1000;
