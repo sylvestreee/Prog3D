@@ -30,6 +30,27 @@ void main()
   // frag_out = vec4(1,1,1,1);
 }`;
 
+var circle_vert=`#version 300 es
+uniform mat4 projectionMatrix;
+uniform int nb;
+
+void main()
+{
+	gl_PointSize = 2.0;
+	float a = 6.2832*float(gl_VertexID)/float(nb);
+	gl_Position = projectionMatrix * vec4(sin(a),cos(a),0,1);
+}
+`;
+
+var color_frag=`#version 300 es
+precision mediump float;
+out vec4 frag_out;
+void main()
+{
+	frag_out = vec4(1,1,1,1);
+}
+`;
+
 let mesh_rend_s = null;
 let mesh_rend_m = null;
 let mesh_rend_v = null;
@@ -53,6 +74,7 @@ let text_u = null;
 let text_n = null;
 
 let distance_soleil = 10000000;
+var prg_circ = null;
 
 let prg_white = null;
 var vao1 = null;
@@ -98,6 +120,7 @@ function onkey_wgl(k) {
 function init_wgl() {
 	create_interf();
 
+	prg_circ = ShaderProgram(circle_vert,color_frag,'Circle');
 	prg_white = ShaderProgram(white_vert,white_frag,'white');
 
   //crée un tore
@@ -173,9 +196,54 @@ function draw_wgl() {
 	const projection_matrix = scene_camera.get_projection_matrix();
 	const view_matrix = scene_camera.get_view_matrix();
 
-	prg_white.bind();
-
 	let taille_soleil = 1390000;
+
+	prg_circ.bind();
+	let distance_mercure = (59000000/distance_soleil)+15;
+	let distance_venus = (108000000/distance_soleil)+15;
+	let distance_terre = (150000000/distance_soleil)+15;
+	let distance_mars = (229000000/distance_soleil)+15;
+	let distance_jupiter = (780000000/distance_soleil)+15;
+	let distance_saturne = (1430000000/distance_soleil)+15;
+	let distance_uranus = (2872000000/distance_soleil)+15;
+	let distance_neptune = (4497000000/distance_soleil)+15;
+
+	/*mercure*/
+	update_uniform('projectionMatrix', mmult(projection_matrix, view_matrix, scale(distance_mercure)));
+	update_uniform('nb', 50);
+	gl.drawArrays(gl.LINE_LOOP, 0, 50);
+
+	/*vénus*/
+	update_uniform('projectionMatrix', mmult(projection_matrix, view_matrix, scale(distance_venus)));
+	update_uniform('nb', 50);
+	gl.drawArrays(gl.LINE_LOOP, 0, 50);
+
+	/*terre*/
+	update_uniform('projectionMatrix', mmult(projection_matrix, view_matrix, scale(distance_terre)));
+	update_uniform('nb', 50);
+	gl.drawArrays(gl.LINE_LOOP, 0, 50);
+
+	/*mars*/
+	update_uniform('projectionMatrix', mmult(projection_matrix, view_matrix, scale(distance_mars)));
+	update_uniform('nb', 50);
+	gl.drawArrays(gl.LINE_LOOP, 0, 50);
+
+	/*jupiter*/
+	update_uniform('projectionMatrix', mmult(projection_matrix, view_matrix, scale(distance_jupiter)));
+	update_uniform('nb', 50);
+	gl.drawArrays(gl.LINE_LOOP, 0, 50);
+
+	/*uranus*/
+	update_uniform('projectionMatrix', mmult(projection_matrix, view_matrix, scale(distance_uranus)));
+	update_uniform('nb', 50);
+	gl.drawArrays(gl.LINE_LOOP, 0, 50);
+
+	/*neptune*/
+	update_uniform('projectionMatrix', mmult(projection_matrix, view_matrix, scale(distance_neptune)));
+	update_uniform('nb', 50);
+	gl.drawArrays(gl.LINE_LOOP, 0, 50);
+
+	prg_white.bind();
 
 	/*soleil*/
 	let rotation_soleil = 25/1000;
@@ -193,7 +261,6 @@ function draw_wgl() {
 
 	/*mercure*/
 	let scale_mercure = (4879/taille_soleil)*100;
-	let distance_mercure = (59000000/distance_soleil)+15;
 	let revolution_mercure = 88/1000;
 	let rotation_mercure = 59/1000;
 
@@ -212,7 +279,6 @@ function draw_wgl() {
 
 	/*vénus*/
 	let scale_venus = (12104/taille_soleil)*100;
-	let distance_venus = (108000000/distance_soleil)+15;
 	let revolution_venus = 225/1000;
 	let rotation_venus = 243/1000;
 
@@ -231,7 +297,6 @@ function draw_wgl() {
 
 	/*terre*/
 	let scale_terre = (12756/taille_soleil)*100;
-	let distance_terre = (150000000/distance_soleil)+15;
 	let revolution_terre = 365/1000;
 	let rotation_terre = 1/10;
 
@@ -250,7 +315,6 @@ function draw_wgl() {
 
 	/*mars*/
 	let scale_mars = (6792/taille_soleil)*100;
-	let distance_mars = (229000000/distance_soleil)+15;
 	let revolution_mars = 720/1000;
 	let rotation_mars = 1/10;
 
@@ -269,7 +333,6 @@ function draw_wgl() {
 
 	/*jupiter*/
 	let scale_jupiter = (142984/taille_soleil)*100;
-	let distance_jupiter = (780000000/distance_soleil)+15;
 	let revolution_jupiter = 4380/10000;
 	let rotation_jupiter = (10/24)/10;
 
@@ -288,7 +351,6 @@ function draw_wgl() {
 
 	/*saturne*/
 	let scale_saturne = (120536/taille_soleil)*100;
-	let distance_saturne = (1430000000/distance_soleil)+15;
 	let revolution_saturne = 10585/10000;
 	let rotation_saturne = (11/24)/10;
 
@@ -307,7 +369,6 @@ function draw_wgl() {
 
 	/*uranus*/
 	let scale_uranus = (51118/taille_soleil)*100;
-	let distance_uranus = (2872000000/distance_soleil)+15;
 	let revolution_uranus = 30660/10000;
 	let rotation_uranus = (17/24)/10;
 
@@ -326,7 +387,6 @@ function draw_wgl() {
 
 	/*neptune*/
 	let scale_neptune = (49528/taille_soleil)*100;
-	let distance_neptune = (4497000000/distance_soleil)+15;
 	let revolution_neptune = 60225/10000;
 	let rotation_neptune = (16/24)/10;
 
