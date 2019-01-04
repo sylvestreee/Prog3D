@@ -21,13 +21,21 @@ precision highp float;
 out vec4 frag_out;
 
 uniform sampler2D TU0;
+uniform sampler2D TU1;
+uniform int hasSky;
 
 in vec2 TC0;
 void main()
 {
-	vec4 color = texture(TU0, TC0).rgba;
-	frag_out = color;
-  // frag_out = vec4(1,1,1,1);
+	if(hasSky == 1) {
+		vec4 sol = texture(TU0, TC0).rgba;
+		vec4 ciel = texture(TU1, TC0).rgba;
+		frag_out = vec4(mix(sol, ciel, ciel.r));
+	}
+	else {
+		vec4 sol = texture(TU0, TC0).rgba;
+		frag_out = sol;
+	}
 }`;
 
 var circle_vert=`#version 300 es
@@ -66,6 +74,7 @@ let text_s = null;
 let text_m = null;
 let text_v = null;
 let text_t = null;
+let text_sk = null;
 let text_l = null;
 let text_ma = null;
 let text_j = null;
@@ -160,6 +169,9 @@ function init_wgl() {
 	text_t = Texture2d();
 	text_t.load('textures/earth_daymap.jpg');
 
+	text_sk = Texture2d();
+	text_sk.load('textures/earth_clouds.jpg');
+
 	text_l = Texture2d();
 	text_l.load('textures/moon.jpg');
 
@@ -230,6 +242,11 @@ function draw_wgl() {
 
 	/*jupiter*/
 	update_uniform('projectionMatrix', mmult(projection_matrix, view_matrix, scale(distance_jupiter)));
+	update_uniform('nb', 50);
+	gl.drawArrays(gl.LINE_LOOP, 0, 50);
+
+	/*saturne*/
+	update_uniform('projectionMatrix', mmult(projection_matrix, view_matrix, scale(distance_saturne)));
 	update_uniform('nb', 50);
 	gl.drawArrays(gl.LINE_LOOP, 0, 50);
 
@@ -311,7 +328,10 @@ function draw_wgl() {
 	update_uniform('viewMatrix', pos4);
 	update_uniform('projectionMatrix', projection_matrix);
 	text_t.bind(0);
+	text_sk.bind(1);
+	update_uniform('hasSky', 1);
 	mesh_rend_t.draw(gl.TRIANGLES);
+	update_uniform('hasSky', 0);
 
 	/*mars*/
 	let scale_mars = (6792/taille_soleil)*100;
