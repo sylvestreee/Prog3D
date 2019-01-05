@@ -82,11 +82,10 @@ let text_sa = null;
 let text_u = null;
 let text_n = null;
 
-// let uranus = Mesh.Sphere(20);
-
 let distance_soleil = 10000000;
-var prg_circ = null;
+let radius = 500;
 
+var prg_circ = null;
 let prg_white = null;
 var vao1 = null;
 
@@ -134,7 +133,6 @@ function init_wgl() {
 	prg_circ = ShaderProgram(circle_vert,color_frag,'Circle');
 	prg_white = ShaderProgram(white_vert,white_frag,'white');
 
-  //crée un tore
 	let soleil = Mesh.Sphere(20);
 	let mercure = Mesh.Sphere(20);
 	let venus = Mesh.Sphere(20);
@@ -146,8 +144,6 @@ function init_wgl() {
 	let uranus = Mesh.Sphere(20);
 	let neptune = Mesh.Sphere(20);
 
-	//crée le renderer (positions?/normales?/coord_texture?)
-  //il contient VBO + VAO + VBO + draw()
   mesh_rend_s = soleil.renderer(true,true,true);
 	mesh_rend_m = mercure.renderer(true,true,true);
 	mesh_rend_v = venus.renderer(true,true,true);
@@ -196,10 +192,8 @@ function init_wgl() {
   let now = new Date(Date.now());
   ewgl_current_time = now.getHours()*3600+now.getMinutes()*60;
 
-  //place la caméra pour bien voir l'objet
-	// scene_camera.show_scene(terre.BB.center);
+	scene_camera.show_scene(soleil.BB);
 	scene_camera.set_scene_radius(500);
-	scene_camera.set_scene_center(terre.BB.center);
 }
 
 function draw_wgl() {
@@ -207,7 +201,6 @@ function draw_wgl() {
 	gl.enable(gl.DEPTH_TEST);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	//les matrices sont déduites de la caméra
 	const projection_matrix = scene_camera.get_projection_matrix();
 	const view_matrix = scene_camera.get_view_matrix();
 
@@ -217,6 +210,7 @@ function draw_wgl() {
 	let distance_mercure = (59000000/distance_soleil)+15;
 	let distance_venus = (108000000/distance_soleil)+15;
 	let distance_terre = (150000000/distance_soleil)+15;
+	let distance_lune = (385000/200000);
 	let distance_mars = (229000000/distance_soleil)+15;
 	let distance_jupiter = (780000000/distance_soleil)+15;
 	let distance_saturne = (1430000000/distance_soleil)+15;
@@ -243,6 +237,7 @@ function draw_wgl() {
 	update_uniform('nb', 50);
 	gl.drawArrays(gl.LINE_LOOP, 0, 50);
 
+	//les matrices sont déduites de la caméra
 	/*jupiter*/
 	update_uniform('projectionMatrix', mmult(projection_matrix, view_matrix, scale(distance_jupiter)));
 	update_uniform('nb', 50);
@@ -284,7 +279,7 @@ function draw_wgl() {
 	let revolution_mercure = 88/1000;
 	let rotation_mercure = 59/1000;
 
-	let pos2 = mmult(// console.log(uranus);
+	let pos2 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
 									 rotateZ((ewgl_current_time*sl_n.value)/revolution_mercure),
@@ -336,12 +331,30 @@ function draw_wgl() {
 	mesh_rend_t.draw(gl.TRIANGLES);
 	update_uniform('hasSky', 0);
 
+	/*lune*/
+	let scale_lune = (3476/taille_soleil)*100;
+	let revolution_lune = 27/1000;
+	let rotation_lune = 27/1000;
+
+	let pos5 = mmult(
+										pos4,
+										translate(0, 0, 0),
+										rotateZ((ewgl_current_time*sl_n.value)/revolution_lune),
+										translate(distance_lune, 0, 0),
+										rotateZ((ewgl_current_time*sl_n.value)/rotation_lune),
+										scale(scale_lune, scale_lune, scale_lune)
+									);
+	update_uniform('viewMatrix', pos5);
+	update_uniform('projectionMatrix', projection_matrix);
+	text_l.bind(0);
+	mesh_rend_t.draw(gl.TRIANGLES);
+
 	/*mars*/
 	let scale_mars = (6792/taille_soleil)*100;
 	let revolution_mars = 720/1000;
 	let rotation_mars = 1/10;
 
-	let pos5 = mmult(
+	let pos6 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
 									 rotateZ((ewgl_current_time*sl_n.value)/revolution_mars),
@@ -349,7 +362,7 @@ function draw_wgl() {
 									 rotateZ((ewgl_current_time*sl_n.value)/rotation_mars),
 									 scale(scale_mars, scale_mars, scale_mars)
 								 );
-	update_uniform('viewMatrix', pos5);
+	update_uniform('viewMatrix', pos6);
 	update_uniform('projectionMatrix', projection_matrix);
 	text_ma.bind(0);
 	mesh_rend_t.draw(gl.TRIANGLES);
@@ -359,7 +372,7 @@ function draw_wgl() {
 	let revolution_jupiter = 4380/10000;
 	let rotation_jupiter = (10/24)/10;
 
-	let pos6 = mmult(
+	let pos7 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
 									 rotateZ((ewgl_current_time*sl_n.value)/revolution_jupiter),
@@ -367,7 +380,7 @@ function draw_wgl() {
 									 rotateZ((ewgl_current_time*sl_n.value)/rotation_jupiter),
 									 scale(scale_jupiter, scale_jupiter, scale_jupiter)
 								 );
-	update_uniform('viewMatrix', pos6);
+	update_uniform('viewMatrix', pos7);
 	update_uniform('projectionMatrix', projection_matrix);
 	text_j.bind(0);
 	mesh_rend_j.draw(gl.TRIANGLES);
@@ -377,7 +390,7 @@ function draw_wgl() {
 	let revolution_saturne = 10585/10000;
 	let rotation_saturne = (11/24)/10;
 
-	let pos7 = mmult(
+	let pos8 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
 									 rotateZ((ewgl_current_time*sl_n.value)/revolution_saturne),
@@ -385,7 +398,7 @@ function draw_wgl() {
 									 rotateZ((ewgl_current_time*sl_n.value)/rotation_saturne),
 									 scale(scale_saturne, scale_saturne, scale_saturne)
 								 );
-	update_uniform('viewMatrix', pos7);
+	update_uniform('viewMatrix', pos8);
 	update_uniform('projectionMatrix', projection_matrix);
 	text_sa.bind(0);
 	mesh_rend_sa.draw(gl.TRIANGLES);
@@ -395,7 +408,7 @@ function draw_wgl() {
 	let revolution_uranus = 30660/10000;
 	let rotation_uranus = (17/24)/10;
 
-	let pos8 = mmult(
+	let pos9 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
 									 rotateZ((ewgl_current_time*sl_n.value)/revolution_uranus),
@@ -403,7 +416,7 @@ function draw_wgl() {
 									 rotateZ((ewgl_current_time*sl_n.value)/rotation_uranus),
 									 scale(scale_uranus, scale_uranus, scale_uranus)
 								 );
-	update_uniform('viewMatrix', pos8);
+	update_uniform('viewMatrix', pos9);
 	update_uniform('projectionMatrix', projection_matrix);
 	text_u.bind(0);
 	mesh_rend_u.draw(gl.TRIANGLES);
@@ -413,7 +426,7 @@ function draw_wgl() {
 	let revolution_neptune = 60225/10000;
 	let rotation_neptune = (16/24)/10;
 
-	let pos9 = mmult(
+	let pos10 = mmult(
 									 view_matrix,
 									 translate(0, 0, 0),
 									 rotateZ((ewgl_current_time*sl_n.value)/revolution_neptune),
@@ -421,7 +434,7 @@ function draw_wgl() {
 									 rotateZ((ewgl_current_time*sl_n.value)/rotation_neptune),
 									 scale(scale_neptune, scale_neptune, scale_neptune)
 								 );
-	update_uniform('viewMatrix', pos9);
+	update_uniform('viewMatrix', pos10);
 	update_uniform('projectionMatrix', projection_matrix);
 	text_n.bind(0);
 	mesh_rend_n.draw(gl.TRIANGLES);

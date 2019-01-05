@@ -478,7 +478,7 @@ var m = Mesh.Wave(s)
 * s: paramètre de subdivision
 
 //--------------------------------------
-//  Création par lecture de fichier off / obj
+//  Création par lecture de fichier off / objscene_ca
 //--------------------------------------
 
 Mesh.load(blob)
