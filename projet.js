@@ -83,11 +83,31 @@ let text_u = null;
 let text_n = null;
 
 let distance_soleil = 10000000;
-let radius = 500;
+let distance_mercure;
+let distance_venus;
+let distance_terre;
+let distance_lune;
+let distance_mars;
+let distance_jupiter;
+let distance_saturne;
+let distance_uranus;
+let distance_neptune;;
+
+let revolution_mercure = 88/1000;
+let revolution_venus = 225/1000;
+let revolution_terre = 365/1000;
+let revolution_lune = 27/1000;
+let revolution_mars = 720/1000;
+let revolution_jupiter = 4380/10000;
+let revolution_saturne = 10585/10000;
+let revolution_uranus = 30660/10000;
+let revolution_neptune = 60225/10000;
 
 var prg_circ = null;
 let prg_white = null;
 var vao1 = null;
+
+let test;
 
 var sl_n;
 
@@ -99,7 +119,21 @@ function create_interf() {
   UserInterface.add_label("+ : augmentation");
   UserInterface.add_label("- :  diminution");
 	UserInterface.add_label("espace : état initial");
-	UserInterface.add_br();
+	UserInterface.end_use();
+
+	UserInterface.use_field_set('V',"Focus");
+  UserInterface.add_label("0 : soleil");
+  UserInterface.add_label("1 : mercure");
+	UserInterface.add_label("2 : vénus");
+	UserInterface.add_label("3 : terre");
+	UserInterface.add_label("4 : lune");
+	UserInterface.add_label("5 : mars");
+	UserInterface.add_label("6 : jupiter");
+	UserInterface.add_label("7 : saturne");
+	UserInterface.add_label("8 : uranus");
+	UserInterface.add_label("9 : neptune");
+	UserInterface.add_label(". : état initial");
+	UserInterface.end_use();
 }
 
 function onkey_wgl(k) {
@@ -113,12 +147,68 @@ function onkey_wgl(k) {
         case '-':
         	if(distance_soleil <  20000000) {
 						distance_soleil += 100000;
+						// console.log(distance_soleil);
 					}
           break;
 
         case ' ':
           distance_soleil = 10000000;
         	break;
+
+				case '0':
+					test = 0;
+					scene_camera.set_scene_radius(20);
+					break;
+
+				case '1':
+					test = 1;
+					scene_camera.set_scene_radius(2);
+					break;
+
+				case '2':
+					test = 2;
+					scene_camera.set_scene_radius(2);
+					break;
+
+				case '3':
+					test = 3;
+					scene_camera.set_scene_radius(2);
+					break;
+
+				case '4':
+					test = 4;
+					scene_camera.set_scene_radius(2);
+					break;
+
+				case '5':
+					test = 5;
+					scene_camera.set_scene_radius(2);
+					break;
+
+				case '6':
+					test = 6;
+					scene_camera.set_scene_radius(15);
+					break;
+
+				case '7':
+					test = 7;
+					scene_camera.set_scene_radius(15);
+					break;
+
+				case '8':
+					test = 8;
+					scene_camera.set_scene_radius(15);
+					break;
+
+				case '9':
+					test = 9;
+					scene_camera.set_scene_radius(15);
+					break;
+
+				case '.':
+					test = 0;
+					scene_camera.set_scene_radius(500);
+					break;
 
         default:
 					return false;
@@ -206,7 +296,6 @@ function draw_wgl() {
 
 	let taille_soleil = 1390000;
 
-	prg_circ.bind();
 	let distance_mercure = (59000000/distance_soleil)+15;
 	let distance_venus = (108000000/distance_soleil)+15;
 	let distance_terre = (150000000/distance_soleil)+15;
@@ -216,6 +305,8 @@ function draw_wgl() {
 	let distance_saturne = (1430000000/distance_soleil)+15;
 	let distance_uranus = (2872000000/distance_soleil)+15;
 	let distance_neptune = (4497000000/distance_soleil)+15;
+
+	prg_circ.bind();
 
 	/*mercure*/
 	update_uniform('projectionMatrix', mmult(projection_matrix, view_matrix, scale(distance_mercure)));
@@ -273,10 +364,12 @@ function draw_wgl() {
 	update_uniform('projectionMatrix', projection_matrix);
 	text_s.bind(0);
 	mesh_rend_s.draw(gl.TRIANGLES);
+	if(test == 0) {
+		scene_camera.set_scene_center(Vec4(0,0,0,1));
+	}
 
 	/*mercure*/
 	let scale_mercure = (4879/taille_soleil)*100;
-	let revolution_mercure = 88/1000;
 	let rotation_mercure = 59/1000;
 
 	let pos2 = mmult(
@@ -291,10 +384,15 @@ function draw_wgl() {
 	update_uniform('projectionMatrix', projection_matrix);
 	text_m.bind(0);
 	mesh_rend_m.draw(gl.TRIANGLES);
+	if(test == 1) {
+		scene_camera.set_scene_center(mmult(
+																				rotateZ((ewgl_current_time*sl_n.value)/revolution_mercure),
+																				translate(distance_mercure, 0, 0)
+																			).vecmult(Vec4(0,0,0,1)));
+	}
 
 	/*vénus*/
 	let scale_venus = (12104/taille_soleil)*100;
-	let revolution_venus = 225/1000;
 	let rotation_venus = 243/1000;
 
 	let pos3 = mmult(
@@ -309,10 +407,15 @@ function draw_wgl() {
 	update_uniform('projectionMatrix', projection_matrix);
 	text_v.bind(0);
 	mesh_rend_v.draw(gl.TRIANGLES);
+	if(test == 2) {
+		scene_camera.set_scene_center(mmult(
+																				rotateZ((ewgl_current_time*sl_n.value)/revolution_venus),
+																				translate(distance_venus, 0, 0)
+																			).vecmult(Vec4(0,0,0,1)));
+	}
 
 	/*terre*/
 	let scale_terre = (12756/taille_soleil)*100;
-	let revolution_terre = 365/1000;
 	let rotation_terre = 1/10;
 
 	let pos4 = mmult(
@@ -330,10 +433,15 @@ function draw_wgl() {
 	update_uniform('hasSky', 1);
 	mesh_rend_t.draw(gl.TRIANGLES);
 	update_uniform('hasSky', 0);
+	if(test == 3) {
+		scene_camera.set_scene_center(mmult(
+																				rotateZ((ewgl_current_time*sl_n.value)/revolution_terre),
+																				translate(distance_terre, 0, 0)
+																			).vecmult(Vec4(0,0,0,1)));
+	}
 
 	/*lune*/
 	let scale_lune = (3476/taille_soleil)*100;
-	let revolution_lune = 27/1000;
 	let rotation_lune = 27/1000;
 
 	let pos5 = mmult(
@@ -348,10 +456,17 @@ function draw_wgl() {
 	update_uniform('projectionMatrix', projection_matrix);
 	text_l.bind(0);
 	mesh_rend_t.draw(gl.TRIANGLES);
+	if(test == 4) {
+		scene_camera.set_scene_center(mmult(
+																				rotateZ((ewgl_current_time*sl_n.value)/revolution_terre),
+																				translate(distance_terre, 0, 0),
+																				rotateZ((ewgl_current_time*sl_n.value)/revolution_lune),
+																				translate(distance_lune, 0, 0)
+																			).vecmult(Vec4(0,0,0,1)));
+	}
 
 	/*mars*/
 	let scale_mars = (6792/taille_soleil)*100;
-	let revolution_mars = 720/1000;
 	let rotation_mars = 1/10;
 
 	let pos6 = mmult(
@@ -366,10 +481,15 @@ function draw_wgl() {
 	update_uniform('projectionMatrix', projection_matrix);
 	text_ma.bind(0);
 	mesh_rend_t.draw(gl.TRIANGLES);
+	if(test == 5) {
+		scene_camera.set_scene_center(mmult(
+																				rotateZ((ewgl_current_time*sl_n.value)/revolution_mars),
+																				translate(distance_mars, 0, 0)
+																			).vecmult(Vec4(0,0,0,1)));
+	}
 
 	/*jupiter*/
 	let scale_jupiter = (142984/taille_soleil)*100;
-	let revolution_jupiter = 4380/10000;
 	let rotation_jupiter = (10/24)/10;
 
 	let pos7 = mmult(
@@ -384,10 +504,15 @@ function draw_wgl() {
 	update_uniform('projectionMatrix', projection_matrix);
 	text_j.bind(0);
 	mesh_rend_j.draw(gl.TRIANGLES);
+	if(test == 6) {
+		scene_camera.set_scene_center(mmult(
+																				rotateZ((ewgl_current_time*sl_n.value)/revolution_jupiter),
+																				translate(distance_jupiter, 0, 0)
+																			).vecmult(Vec4(0,0,0,1)));
+	}
 
 	/*saturne*/
 	let scale_saturne = (120536/taille_soleil)*100;
-	let revolution_saturne = 10585/10000;
 	let rotation_saturne = (11/24)/10;
 
 	let pos8 = mmult(
@@ -402,10 +527,15 @@ function draw_wgl() {
 	update_uniform('projectionMatrix', projection_matrix);
 	text_sa.bind(0);
 	mesh_rend_sa.draw(gl.TRIANGLES);
+	if(test == 7) {
+		scene_camera.set_scene_center(mmult(
+																				rotateZ((ewgl_current_time*sl_n.value)/revolution_saturne),
+																				translate(distance_saturne, 0, 0)
+																			).vecmult(Vec4(0,0,0,1)));
+	}
 
 	/*uranus*/
 	let scale_uranus = (51118/taille_soleil)*100;
-	let revolution_uranus = 30660/10000;
 	let rotation_uranus = (17/24)/10;
 
 	let pos9 = mmult(
@@ -420,10 +550,15 @@ function draw_wgl() {
 	update_uniform('projectionMatrix', projection_matrix);
 	text_u.bind(0);
 	mesh_rend_u.draw(gl.TRIANGLES);
+	if(test == 8) {
+		scene_camera.set_scene_center(mmult(
+																				rotateZ((ewgl_current_time*sl_n.value)/revolution_uranus),
+																				translate(distance_uranus, 0, 0)
+																			).vecmult(Vec4(0,0,0,1)));
+	}
 
 	/*neptune*/
 	let scale_neptune = (49528/taille_soleil)*100;
-	let revolution_neptune = 60225/10000;
 	let rotation_neptune = (16/24)/10;
 
 	let pos10 = mmult(
@@ -438,6 +573,12 @@ function draw_wgl() {
 	update_uniform('projectionMatrix', projection_matrix);
 	text_n.bind(0);
 	mesh_rend_n.draw(gl.TRIANGLES);
+	if(test == 9) {
+		scene_camera.set_scene_center(mmult(
+																				rotateZ((ewgl_current_time*sl_n.value)/revolution_neptune),
+																				translate(distance_neptune, 0, 0)
+																			).vecmult(Vec4(0,0,0,1)));
+	}
 	unbind_shader();
 }
 
